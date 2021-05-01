@@ -3,7 +3,7 @@ import 'package:flutter_app_movie/detail_page.dart';
 import 'package:flutter_app_movie/movie.dart';
 import 'package:provider/provider.dart';
 import 'movie_info.dart';
-
+//ddddd
 void main() {
   runApp(MyApp());
 }
