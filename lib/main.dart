@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_movie/detail_page.dart';
 import 'package:flutter_app_movie/movie.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'movie_info.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,34 +28,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Results> filteredItems = [];
-  List<Results> movies = [];
   final _controller = TextEditingController();
-
-
-  Future<Movie> fetchData() async {
-    var uri = Uri.parse(
-        'https://api.themoviedb.org/3/movie/upcoming?api_key=a64533e7ece6c72731da47c9c8bc691f&language=ko-KR&page=1');
-    var response = await http.get(uri);
-
-    Movie result = Movie.fromJson(json.decode(response.body));
-    return result;
-  }
 
   @override
   void initState() {
     super.initState();
-    fetchData().then((airResult) {
-      setState(() {
-        for (int i = 0; i < airResult.results.length; i++) {
-          movies.add(airResult.results[i]);
-        }
-      });
-    });
+    Provider.of<MovieInfo>(context, listen: false).fetchData();
+
   }
 
   @override
   Widget build(BuildContext context) {
+    MovieInfo movieInfo = Provider.of(context);
+    Movie result = movieInfo.result;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -68,10 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
             controller: _controller,
             onChanged: (text) {
               setState(() {
-                filteredItems.clear();
-                for (var item in movies) {
+                movieInfo.filteredItems.clear();
+                for (var item in movieInfo.movies) {
                   if (item.title.contains(text)) {
-                    filteredItems.add(item);
+                    movieInfo.filteredItems.add(item);
                   }
                 }
               });
@@ -96,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   Widget _buildItem(Results movies) {
     return InkWell(
       onTap: () {
@@ -115,10 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
             elevation: 5,
             child: Hero(
               tag: movies.posterPath,
-              child: Image.network('https://image.tmdb.org/t/p/w500/${movies.posterPath}'),
-              ),
+              child: Image.network(
+                  'https://image.tmdb.org/t/p/w500/${movies.posterPath}'),
             ),
-
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
             child: Align(
@@ -134,12 +121,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-
   List<Widget> _buildItems() {
-    if (_controller.text.isEmpty) {
-      return movies.map((e) => _buildItem(e)).toList();
-    }
-    return filteredItems.map((e) => _buildItem(e)).toList();
-  }
+    MovieInfo movieInfo = Provider.of(context);
+    Movie result = movieInfo.result;
 
+    if (_controller.text.isEmpty) {
+      return result.results.map((e) => _buildItem(e)).toList();
+    }
+    return movieInfo.filteredItems.map((e) => _buildItem(e)).toList();
+  }
 }
