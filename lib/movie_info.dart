@@ -6,8 +6,7 @@ import 'movie.dart';
 
 class MovieInfo extends ChangeNotifier {
   final List<Results> filteredItems = [];
-  List<Results> movies = [];
-
+  final controller = TextEditingController();
   Movie _result;
   Movie get result => _result;
 

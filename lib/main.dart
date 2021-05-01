@@ -3,7 +3,7 @@ import 'package:flutter_app_movie/detail_page.dart';
 import 'package:flutter_app_movie/movie.dart';
 import 'package:provider/provider.dart';
 import 'movie_info.dart';
-//ddddd
+
 void main() {
   runApp(MyApp());
 }
@@ -12,15 +12,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MovieInfo>(create: (_) => MovieInfo()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(),
       ),
-      home: MyHomePage(),
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -28,15 +34,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     Provider.of<MovieInfo>(context, listen: false).fetchData();
-
   }
-
   @override
   Widget build(BuildContext context) {
     MovieInfo movieInfo = Provider.of(context);
@@ -51,11 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: [
           TextField(
-            controller: _controller,
+            controller: movieInfo.controller,
             onChanged: (text) {
               setState(() {
                 movieInfo.filteredItems.clear();
-                for (var item in movieInfo.movies) {
+                for (var item in movieInfo.result.results) {
                   if (item.title.contains(text)) {
                     movieInfo.filteredItems.add(item);
                   }
@@ -75,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: GridView.count(
               crossAxisCount: 3,
               childAspectRatio: 2 / 3.7,
-              children: _buildItems(),
+              children: result == null ? [] : _buildItems(),
             ),
           ),
         ],
@@ -125,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MovieInfo movieInfo = Provider.of(context);
     Movie result = movieInfo.result;
 
-    if (_controller.text.isEmpty) {
+    if (movieInfo.controller.text.isEmpty) {
       return result.results.map((e) => _buildItem(e)).toList();
     }
     return movieInfo.filteredItems.map((e) => _buildItem(e)).toList();
