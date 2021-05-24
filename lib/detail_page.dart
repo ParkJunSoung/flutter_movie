@@ -19,16 +19,19 @@ class DetailPage extends StatelessWidget {
             Text(movies.title),
             Row(
               children: [
-                Image.network('https://image.tmdb.org/t/p/w500/${movies.posterPath}',width: 250,height: 250,),
+                Image.network(
+                  'https://image.tmdb.org/t/p/w500/${movies.posterPath}',
+                  width: 250, height: 250,),
 
                 Container(
                   width: 70,
                   height: 60,
 
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(child: Text('${movies.voteCount.toString()}',textAlign: TextAlign.center,),
-                    color: Colors.white,)
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(child: Text('${movies.voteCount.toString()}',
+                        textAlign: TextAlign.center,),
+                        color: Colors.white,)
                   ),
                 ),
                 Container(
@@ -38,8 +41,9 @@ class DetailPage extends StatelessWidget {
 
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Card(child: Text('★${movies.voteAverage.toString()}'),
-                    color: Colors.white,),
+                    child: Card(
+                      child: Text('★${movies.voteAverage.toString()}'),
+                      color: Colors.white,),
                   ),
                 ),
               ],
@@ -48,7 +52,6 @@ class DetailPage extends StatelessWidget {
           ],
         ),
       ),
-
 
 
     );

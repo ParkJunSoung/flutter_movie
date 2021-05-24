@@ -8,6 +8,7 @@ class MovieInfo extends ChangeNotifier {
   final List<Results> filteredItems = [];
   final controller = TextEditingController();
   Movie _result;
+
   Movie get result => _result;
 
   Future<Movie> fetchData() async {

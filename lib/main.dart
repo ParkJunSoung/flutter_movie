@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     Provider.of<MovieInfo>(context, listen: false).fetchData();
   }
+
   @override
   Widget build(BuildContext context) {
     MovieInfo movieInfo = Provider.of(context);
@@ -53,36 +54,37 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          TextField(
-            controller: movieInfo.controller,
-            onChanged: (text) {
-              setState(() {
-                movieInfo.filteredItems.clear();
-                for (var item in movieInfo.result.results) {
-                  if (item.title.contains(text)) {
-                    movieInfo.filteredItems.add(item);
-                  }
-                }
-              });
-            },
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(40)),
-              labelText: '검색',
-            ),
-          ),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 3,
-              childAspectRatio: 2 / 3.7,
-              children: result == null ? [] : _buildItems(),
-            ),
-          ),
-        ],
+        TextField(
+        controller: movieInfo.controller,
+        onChanged: (text) {
+          setState(() {
+            movieInfo.filteredItems.clear();
+            for (var item in movieInfo.result.results) {
+              if (item.title.contains(text)) {
+                movieInfo.filteredItems.add(item);
+              }
+            }
+          });
+        },
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white),
+              borderRadius: BorderRadius.circular(40)),
+          labelText: '검색',
+        ),
       ),
+      Expanded(
+        child: GridView.count(
+            crossAxisCount: 3,
+            childAspectRatio: 2 / 3.7,
+            children: result == null ? [] : _buildItems(),
+      ),
+    ),]
+    ,
+    )
+    ,
     );
   }
 
